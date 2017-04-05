@@ -1,0 +1,6 @@
+package: github.com/intelsdi-x/snap-plugin-processor-threshold
+import:
+- package: github.com/golang/protobuf
+- package: github.com/intelsdi-x/snap-plugin-lib-go
+  subpackages:
+  - v1/plugin
