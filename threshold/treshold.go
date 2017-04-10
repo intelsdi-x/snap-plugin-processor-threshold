@@ -44,11 +44,42 @@ func NewThresholdProcessor() *ThresholdProcessor {
 // Process method to filter data
 func (p ThresholdProcessor) Process(mts []plugin.Metric, cfg plugin.Config) ([]plugin.Metric, error) {
 	metrics := []plugin.Metric{}
+	dynamic := map[string][]string{}
+	for k, _ := range cfg {
+		if strings.Contains(k, "*") {
+			sl := strings.Split(k, "/")
+			if sl[0] == "" {
+				sl = append(sl[:0], sl[1:]...)
+			}
+			dynamic[k] = sl
+		}
+	}
 	for _, m := range mts {
+		if dynamic != nil {
+			for k, v := range dynamic {
+				counter := 0
+				ignored := 0
+				for i, ns := range v {
+					if ns == "*" {
+						ignored++
+					}
+					if m.Namespace.Strings()[i] == ns {
+						counter++
+					}
+				}
+				if counter == len(v) - ignored {
+					a := convertInterface(m.Data)
+					b := convertInterface(cfg[k])
+					if a >= b {
+						metrics = append(metrics, m)
+					}
+				}
+			}
+		}
 		key := fmt.Sprintf("/%s", strings.Join(m.Namespace.Strings(), "/"))
 		if val, ok := cfg[key]; ok {
-			a := convertIntervace(m.Data)
-			b := convertIntervace(val)
+			a := convertInterface(m.Data)
+			b := convertInterface(val)
 			if a >= b {
 				metrics = append(metrics, m)
 			}
@@ -63,7 +94,7 @@ func (p ThresholdProcessor) GetConfigPolicy() (plugin.ConfigPolicy, error) {
 	return *policy, nil
 }
 
-func convertIntervace(data interface{}) float64 {
+func convertInterface(data interface{}) float64 {
 	switch data.(type) {
 	case int:
 		return float64(data.(int))
