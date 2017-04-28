@@ -27,9 +27,9 @@ import (
 
 const (
 	// Name of plugin
-	Name       = "threshold"
+	Name = "threshold"
 	// Version of plugin
-	Version    = 1
+	Version = 1
 )
 
 // ThresholdProcessor structure
@@ -67,7 +67,7 @@ func (p ThresholdProcessor) Process(mts []plugin.Metric, cfg plugin.Config) ([]p
 						counter++
 					}
 				}
-				if counter == len(v) - ignored {
+				if counter == len(v)-ignored {
 					a := convertInterface(m.Data)
 					b := convertInterface(cfg[k])
 					if a >= b {
