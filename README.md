@@ -49,32 +49,27 @@ This builds the plugin in `./build/`
 
 ### Examples
 Examplary task manifest with threshold set up for core 0
+
 ```
-{
-  "version": 1,
-  "schedule": {
-    "type": "simple",
-    "interval": "1s"
-  },
-  "workflow": {
-    "collect": {
-      "metrics": {
-        "/intel/psutil/cpu/*/user": {},
-      },
-      "process": [
-        {
-          "plugin_name": "threshold",
-          "config": {
-            "/intel/psutil/cpu/0/user": 4
-          }
-        }
-      ],
-      "publish": [
-              ],
-      "publish": null
-    }
-  }
-}
+
+---
+  version: 1
+  schedule:
+    type: "simple"
+    interval: "5s"
+  max-failures: 10
+  workflow:
+    collect:
+      metrics:
+        /intel/procfs/cpu/*/utilization_percentage: {}
+      process:
+        - plugin_name: "threshold"
+          config:
+            /intel/procfs/cpu/0/utilization_percentage : 95
+          publish:
+            - plugin_name: "file"
+              config:
+                file: "/tmp/cpu_threshold.log"
 ```
 
 ### Roadmap
