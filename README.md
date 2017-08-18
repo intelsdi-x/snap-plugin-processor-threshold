@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/intelsdi-x/snap-plugin-processor-threshold.svg?branch=master)](https://travis-ci.org/intelsdi-x/snap-plugin-processor-threshold)
+
 # Snap processor plugin - threshold
 This plugin filtering metrics with task defined threshold
 
